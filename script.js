@@ -13,19 +13,16 @@ document.addEventListener("DOMContentLoaded", function () {
             jsonData = await response.json();
             console.log(jsonData.data);
 
-            // After successful fetch, render the products
             renderProducts("list");
         } catch (error) {
             console.error('Error fetching data:', error);
         }
     }
 
-    // Function to create a product HTML element
     function createProductElement(product) {
         const productItem = document.createElement("div");
         productItem.classList.add("plp__product-item");
 
-        // Create the product image element
         const imgWrapper = document.createElement("div");
         imgWrapper.classList.add("plp__product-item-img-wrapper");
         const productImg = document.createElement("img");
@@ -35,12 +32,10 @@ document.addEventListener("DOMContentLoaded", function () {
         productImg.alt = "";
         imgWrapper.appendChild(productImg);
 
-        // Create the product badge element
         const badge = document.createElement("div");
         badge.classList.add("plp__product-item-badge");
         badge.textContent = product.product_badge;
 
-        // Create the product title and variants element
         const productInfo = document.createElement("div");
         const title = document.createElement("h2");
         title.textContent = product.product_title;
@@ -58,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
         productInfo.appendChild(title);
         productInfo.appendChild(variantsList);
 
-        // Append elements to product item
         imgWrapper.appendChild(badge);
         productItem.appendChild(imgWrapper);
         productItem.appendChild(productInfo);
@@ -87,7 +81,6 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
         
-    // Fetch data when the DOM is loaded
     fetchData();
 });
     
