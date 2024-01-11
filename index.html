@@ -3,91 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PLP</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 </head>
+
+
+<style>
+     body {
+      font-family: Inter, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      margin-top:20px;
+      cursor: pointer;
+
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px;
+      background-color: white;
+      max-width: 300px;
+    }
+
+    .product-image {
+        max-width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+        max-height: 300px;
+
+    }
+    .product-img_wrapper{
+      position: relative;
+    }
+    .save-badge{
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      border-radius: 8px;
+    background: red;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px;
+    }
+
+    .offer-badge{
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      border-radius: 8px;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px;
+    }
+</style>
 <body>
+    <header>
+        <h1>Collection</h1>
+      </header>
+    
+      <nav id="category-buttons"></nav>
 
-    <main class="plp__wrapper">
-        <section class="text-center">
-            <div class="main-title">PLP</div>
+    
+      <div id="product-container" style="display: flex; flex-wrap: wrap; justify-content: center;"></div>
+    
 
-            <div class="plp__input-group">
-                <div class="flex-grow">
-                    <input placeholder="Type something to search ..." type="search" name="search" id="search-box">
-                </div>
-                <div class="flex">
-                    <button id="list-view">
-                        <img width="30" height="30" src="./list.png" alt="">
-                    </button>
-                    <button id="grid-view">
-                        <img width="30" height="30" src="./grid.png" alt="">
-                    </button>
-                </div>
+
+
+      <script>
+    const categoryButtonsContainer = document.getElementById('category-buttons');
+
+        let categoriesData = fetchData()
+
+            const renderProducts=()=>{
+              // Dynamically create category buttons
+              categoriesData.categories.forEach(category => {
+                  const button = document.createElement('button');
+                  button.textContent = category.category_name;
+                  button.onclick = () => showCategory(category.category_name);
+                  categoryButtonsContainer.appendChild(button);
+                });
+
+                // Show default category on page load
+                showCategory(categoriesData.categories[0].category_name);
+            }
+
+        async function fetchData() {
+          try {
+            const response = await fetch('https://cdn.shopify.com/s/files/1/0564/3685/0790/files/multiProduct.json');
+            const data = await response.json();
+            console.log(data)
+
+            categoriesData=data;
+            renderProducts()
+            return data;
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
+
+
+
+
+
+        function showCategory(categoryName) {
+      const category = categoriesData.categories.find(cat => cat.category_name === categoryName);
+
+      if (category) {
+        const productContainer = document.getElementById('product-container');
+        productContainer.innerHTML = '';
+
+        category.category_products.forEach(product => {
+          const productCard = createProductCard(product);
+          productContainer.appendChild(productCard);
+        });
+      }
+    }
+
+    function createProductCard(product) {
+      const cardDiv = document.createElement('div');
+      cardDiv.classList.add('product-card');
+
+      const imageSrc = product.image || ''; // If image is empty, provide a default value
+      const imageAlt = product.title || 'Product Image';
+
+      cardDiv.innerHTML = `
+       <div class="product-img_wrapper">
+        <img src="${imageSrc}" width="300" height="300" alt="${imageAlt}" class="product-image">
+        <div class="save-badge">${calculateDiscount(product.price, product.compare_at_price)}% Off</div>
+        <div class=${product.badge_text && "offer-badge"} >${product.badge_text ? `<strong>${product.badge_text}</strong>` : ''}</div>
+        <div>
+         <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h3>${product.title}</h3>
+        <h5><b>${product.vendor}</b></h5>
+          </div>
+        <div><b>Rs. ${product.price}</b> <span><small><s>Rs.${product.compare_at_price}</s></small></span></div>
             </div>
-        </section>
+        <div><button onclick="addToCart()">Add to Cart</button></div>
+      `;
 
+      return cardDiv;
+    }
 
-        <section id="products-container" class="plp__products list">
+    function calculateDiscount(price, compareAtPrice) {
+      const discountPercentage = ((compareAtPrice - price) / compareAtPrice) * 100;
+      return discountPercentage.toFixed(2);
+    }
 
-            <div class="plp__product-item">
-                <div class="plp__product-item-img-wrapper">
-                    <img width="175" height="175" src="https://s3-alpha-sig.figma.com/img/2183/950e/7da06f51be35b16c9c5a8a00cbc872a9?Expires=1705881600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nr8m67qJfAK92hdZ2XRALn9cwnjHBbWywtQIgZktdku5M-aSu0hqyrwZ-tuSYmiymIma1iRK3n0J6gcHLOqakF87E3v6Xn70-TCvI3xd~E6161ckFD0DJ8XuNx10FItb13T0KOD9GzfTB3aKI6j7ToQbL7qqRaVm2j42ItVQwJwG1SeR5hvlJDSUq8N4he6M8ht8W3vQzMmbVgI49-w78c-jCm1PZIlPFi7OF3KxqxNEchS1Rfk63r04eXXnob0W5JBVhol2hk92fskbM5y0OYnWECkM3RvKTZ74zeSSkl-hHseEgbhWtjmCHQie~cWMRlp0q8NjTXCXR-MICoUN6w__" alt="">
-                    <div class="plp__product-item-badge">NEW</div>
-                </div>
-                <div>
-                    <h2>LIMITED</h2>
-                    <ul>
-                        <li>BLUE / S</li>
-                        <li>BLUE / S</li>
-                        <li>BLUE / S</li>
-                    </ul>
-                    
-                </div>
-            </div>
+    function addToCart() {
+      alert('Added to Cart!');
+    }
 
+ 
+    </script>
 
-
-            <div class="plp__product-item">
-                <div class="plp__product-item-img-wrapper">
-                    <img width="175" height="175" src="https://s3-alpha-sig.figma.com/img/2183/950e/7da06f51be35b16c9c5a8a00cbc872a9?Expires=1705881600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nr8m67qJfAK92hdZ2XRALn9cwnjHBbWywtQIgZktdku5M-aSu0hqyrwZ-tuSYmiymIma1iRK3n0J6gcHLOqakF87E3v6Xn70-TCvI3xd~E6161ckFD0DJ8XuNx10FItb13T0KOD9GzfTB3aKI6j7ToQbL7qqRaVm2j42ItVQwJwG1SeR5hvlJDSUq8N4he6M8ht8W3vQzMmbVgI49-w78c-jCm1PZIlPFi7OF3KxqxNEchS1Rfk63r04eXXnob0W5JBVhol2hk92fskbM5y0OYnWECkM3RvKTZ74zeSSkl-hHseEgbhWtjmCHQie~cWMRlp0q8NjTXCXR-MICoUN6w__" alt="">
-                    <div class="plp__product-item-badge">NEW</div>
-                </div>
-                <div>
-                    <h2>LIMITED</h2>
-                    <ul>
-                        <li>BLUE / S</li>
-                        <li>BLUE / S</li>
-                        <li>BLUE / S</li>
-                    </ul>
-                    
-                </div>
-            </div>
-
-
-
-            <div class="plp__product-item">
-                <div class="plp__product-item-img-wrapper">
-                    <img width="175" height="175" src="https://s3-alpha-sig.figma.com/img/2183/950e/7da06f51be35b16c9c5a8a00cbc872a9?Expires=1705881600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Nr8m67qJfAK92hdZ2XRALn9cwnjHBbWywtQIgZktdku5M-aSu0hqyrwZ-tuSYmiymIma1iRK3n0J6gcHLOqakF87E3v6Xn70-TCvI3xd~E6161ckFD0DJ8XuNx10FItb13T0KOD9GzfTB3aKI6j7ToQbL7qqRaVm2j42ItVQwJwG1SeR5hvlJDSUq8N4he6M8ht8W3vQzMmbVgI49-w78c-jCm1PZIlPFi7OF3KxqxNEchS1Rfk63r04eXXnob0W5JBVhol2hk92fskbM5y0OYnWECkM3RvKTZ74zeSSkl-hHseEgbhWtjmCHQie~cWMRlp0q8NjTXCXR-MICoUN6w__" alt="">
-                    <div class="plp__product-item-badge">NEW</div>
-                </div>
-                <div>
-                    <h2>LIMITED</h2>
-                    <ul>
-                        <li>BLUE / S</li>
-                        <li>BLUE / S</li>
-                        <li>BLUE / S</li>
-                    </ul>
-                    
-                </div>
-            </div>
-
-           
-
-        </section>
-    </main>
-
-    <script src="script.js"></script>
-
+    
+    </body>
 </body>
 </html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="plp__wrapper">
+        <section class="text-center">
+            <div class="main-title">PLP</div>
+
+            <div class="plp__input-group">
+                <div class="flex-grow">
+                    <input placeholder="Type something to search ..." type="search" name="search" id="search-box">
+                </div>
+                <div class="flex">
+                    <button id="list-view">
+                        <img width="30" height="30" src="./list.png" alt="">
+                    </button>
+                    <button id="grid-view">
+                        <img width="30" height="30" src="./grid.png" alt="">
+                    </button>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="products-container" class="plp__products list">
+           
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -62,10 +62,10 @@ img{
     gap: 15px;
 }
 .list{
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
 }
 .grid{
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 50% 50%;
 }
 
 .plp__product-item{
